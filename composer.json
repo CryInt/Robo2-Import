@@ -1,0 +1,28 @@
+{
+    "name": "cry/robo2import",
+    "version": "4.0.1",
+    "description": "Import tyres and wheels from RoboTyre via Robo2 service",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-curl": "*"
+    }
+    ,
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+    },
+    "autoload": {
+        "psr-4": {
+            "Robo2Import\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dmitrii Cry",
+            "email": "cry.int@gmail.com"
+        }
+    ]
+}
