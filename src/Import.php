@@ -97,7 +97,9 @@ class Import
                     $this->log('Before: ' . $logString, $this->getLogCode($worker::CODE, 20));
                 }
 
-                $countProcessed = $countNew = $countUpdate = $countSkip = $countStatus = 0;
+                $countProcessed = $countNew = $countUpdate = $countSkip = $countStatus = $countCallbackItems = 0;
+
+                $callbackItems = [];
 
                 foreach ($items as $n => $item) {
                     if ($n % 1000 === 0) {
@@ -128,6 +130,22 @@ class Import
                     if ($worker->status($item, $itemId)) {
                         $countStatus++;
                     }
+
+                    $itemData = $worker->getItemData($itemId);
+                    if ($itemData !== null) {
+                        $countCallbackItems++;
+                        $callbackItems[] = $itemData->array();
+                    }
+
+                    if ($countCallbackItems >= 1000) {
+                        $this->callbackItems($callbackItems, $this->getLogCode($worker::CODE, 90));
+                        $countCallbackItems = 0;
+                        $callbackItems = [];
+                    }
+                }
+
+                if (count($callbackItems) > 0) {
+                    $this->callbackItems($callbackItems, $this->getLogCode($worker::CODE, 90));
                 }
 
                 $this->log('Skipped ' . $type . 's: ' . $countSkip, $this->getLogCode($worker::CODE, 30));
@@ -171,6 +189,12 @@ class Import
         }
 
         return null;
+    }
+
+    protected function callbackItems(array $logItems, $code = null)
+    {
+        $logItemsJson = json_encode($logItems);
+        $this->transport->cUrl(['type' => 'logItems'], ['list' => $logItemsJson, 'code' => $code]);
     }
 
     protected function log(string $message, ?int $code = null): void

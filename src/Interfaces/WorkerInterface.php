@@ -1,6 +1,7 @@
 <?php
 namespace Robo2Import\Interfaces;
 
+use Robo2Import\Items\CallbackItem;
 use Robo2Import\Items\Item;
 
 interface WorkerInterface
@@ -13,4 +14,5 @@ interface WorkerInterface
     public function update(Item $item, int $itemId): bool;
     public function status(Item $item, int $itemId): bool;
     public function after(): ?string;
+    public function getItemData(int $itemId): ?CallbackItem;
 }

@@ -2,6 +2,7 @@
 namespace Robo2Import\Workers;
 
 use Robo2Import\Interfaces\WorkerInterface;
+use Robo2Import\Items\CallbackItem;
 use Robo2Import\Items\Item;
 
 abstract class Worker implements WorkerInterface
@@ -18,6 +19,10 @@ abstract class Worker implements WorkerInterface
 
     public function skip(Item $item): bool
     {
+        if (empty($item->robo_id)) {
+            return true;
+        }
+
         if (empty($item->price) || $item->price === '0.00') {
             return true;
         }
@@ -51,6 +56,11 @@ abstract class Worker implements WorkerInterface
     public function status(Item $item, int $itemId): bool
     {
         return false;
+    }
+
+    public function getItemData(int $itemId): ?CallbackItem
+    {
+        return null;
     }
 
     public function after(): ?string
