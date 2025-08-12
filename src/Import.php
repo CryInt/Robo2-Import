@@ -68,7 +68,7 @@ class Import
     {
         $startTime = microtime(true);
 
-        $this->log('Begin [Import version: ' . $this->version . ']', 0);
+        $this->log('Begin [Import version: ' . $this->version . ']', 100);
 
         /**
          * @var WorkerInterface $worker
