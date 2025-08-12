@@ -163,7 +163,7 @@ class Import
             $this->log('Finish import ' . $type . 's', $this->getLogCode($worker::CODE, 99));
         }
 
-        $this->log('Time spend: ' . gmdate('H:i:s', microtime(true) - $startTime), 998);
+        $this->log('Time spend: ' . gmdate('H:i:s', (int)(microtime(true) - $startTime)), 998);
         $this->log('End', 999);
     }
 
