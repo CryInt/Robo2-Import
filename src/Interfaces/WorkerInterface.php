@@ -15,4 +15,6 @@ interface WorkerInterface
     public function status(Item $item, int $itemId): bool;
     public function after(): ?string;
     public function getItemData(int $itemId): ?CallbackItem;
+    public function getItemWithoutImages(): ?array;
+    public function setImage(string $itemType, $itemId, string $imageTmp): bool;
 }

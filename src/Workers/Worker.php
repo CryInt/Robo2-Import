@@ -63,6 +63,19 @@ abstract class Worker implements WorkerInterface
         return null;
     }
 
+    /**
+     * @return array|null [item_id,item_type,robo_ids]
+     */
+    public function getItemWithoutImages(): ?array
+    {
+        return null;
+    }
+
+    public function setImage(string $itemType, $itemId, string $imageTmp): bool
+    {
+        return false;
+    }
+
     public function after(): ?string
     {
         return null;

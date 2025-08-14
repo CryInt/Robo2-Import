@@ -167,6 +167,76 @@ class Import
         $this->log('End', 999);
     }
 
+    public function images(): void
+    {
+        $startTime = microtime(true);
+
+        $this->log('Images begin [Import version: ' . $this->version . ']', 2000);
+
+        /**
+         * @var WorkerInterface $worker
+         */
+        foreach ($this->imports as $type => $worker) {
+            if (empty($worker)) {
+                continue;
+            }
+
+            $itemsWithoutImages = $worker->getItemWithoutImages();
+            if ($itemsWithoutImages === null) {
+                continue;
+            }
+
+            if ($this->offset !== null && $this->limit !== null) {
+                $itemsWithoutImages = array_slice($itemsWithoutImages, $this->offset, $this->limit);
+            }
+
+            $this->log('Start import images for ' . $type . 's', $this->getLogCode($worker::CODE, 2000));
+            $this->log($type . ' items without images: ' . count($itemsWithoutImages), $this->getLogCode($worker::CODE, 2010));
+
+            $images = $this->getImages($type);
+
+            if (!empty($images)) {
+                $count = count($images);
+                $this->log('Received ' . $type . 's images: ' . $count, $this->getLogCode($worker::CODE, 2020));
+
+                $countProcessed = $countUnavailable = $countBad = 0;
+
+                foreach ($itemsWithoutImages as $itemsWithoutImage) {
+                    if (empty($itemsWithoutImage['robo_ids'])) {
+                        $countUnavailable++;
+                        continue;
+                    }
+
+                    $result = null;
+
+                    foreach ($itemsWithoutImage['robo_ids'] as $roboId) {
+                        if (array_key_exists($roboId, $images) && !empty($images[$roboId]['url'])) {
+                            $imageTmp = $this->getImageFromUrl($images[$roboId]['url']);
+                            if (!empty($imageTmp)) {
+                                $result = $worker->setImage($itemsWithoutImage['item_type'], $itemsWithoutImage['item_id'], $imageTmp);
+                                if ($result) {
+                                    $countProcessed++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (empty($result)) {
+                        $countBad++;
+                    }
+                }
+
+                $this->log('Image unavailable in ' . $type . 's: ' . $countUnavailable, $this->getLogCode($worker::CODE, 2030));
+                $this->log('Image processed in ' . $type . 's: ' . $countProcessed, $this->getLogCode($worker::CODE, 2040));
+                $this->log('Image bad in ' . $type . 's: ' . $countBad, $this->getLogCode($worker::CODE, 2050));
+            }
+        }
+
+        $this->log('Time spend: ' . gmdate('H:i:s', (int)(microtime(true) - $startTime)), 2998);
+        $this->log('Images end', 2999);
+    }
+
     protected function getItems(string $type): ?array
     {
         $data = $this->transport->cUrl(['type' => $type]);
@@ -186,6 +256,55 @@ class Import
             }
 
             return $data;
+        }
+
+        return null;
+    }
+
+    protected function getImages(string $type): ?array
+    {
+        $data = $this->transport->cUrl([
+            'type' => 'image',
+            'part' => $type,
+        ]);
+
+        if (!empty($data) && self::isJson($data)) {
+            try {
+                $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+            }
+            catch (JsonException $exception) {
+                echo $exception->getMessage();
+                return null;
+            }
+
+            if (!empty($data['error'])) {
+                $this->log('Error getting ' . ucfirst($type) .  " images: " . $data['error']);
+                return null;
+            }
+
+            return $data;
+        }
+
+        return null;
+    }
+
+    protected function getImageFromUrl(string $url): ?string
+    {
+        if (mb_strpos($url, 'png') !== false) {
+            $imageTMP = sys_get_temp_dir() . '/tmp.png';
+        } else {
+            $imageTMP = sys_get_temp_dir() . '/tmp.jpg';
+        }
+
+        if (file_exists($imageTMP)) {
+            unlink($imageTMP);
+        }
+
+        if (mb_strpos('crm.', $url) === false) {
+            @copy($url, $imageTMP);
+            if (file_exists($imageTMP) && filesize($imageTMP) > 3500) {
+                return $imageTMP;
+            }
         }
 
         return null;
