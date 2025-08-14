@@ -181,17 +181,13 @@ class Import
                 continue;
             }
 
-            $itemsWithoutImages = $worker->getItemWithoutImages();
+            $itemsWithoutImages = $worker->getItemWithoutImages($this->offset, $this->limit);
             if ($itemsWithoutImages === null) {
                 continue;
             }
 
-            if ($this->offset !== null && $this->limit !== null) {
-                $itemsWithoutImages = array_slice($itemsWithoutImages, $this->offset, $this->limit);
-            }
-
             $this->log('Start import images for ' . $type . 's', $this->getLogCode($worker::CODE, 2000));
-            $this->log($type . ' items without images: ' . count($itemsWithoutImages), $this->getLogCode($worker::CODE, 2010));
+            $this->log('Something from ' . $type . 's without images: ' . count($itemsWithoutImages), $this->getLogCode($worker::CODE, 2010));
 
             $images = $this->getImages($type);
 
@@ -208,9 +204,11 @@ class Import
                     }
 
                     $result = null;
+                    $tried = false;
 
                     foreach ($itemsWithoutImage['robo_ids'] as $roboId) {
                         if (array_key_exists($roboId, $images) && !empty($images[$roboId]['url'])) {
+                            $tried = true;
                             $imageTmp = $this->getImageFromUrl($images[$roboId]['url']);
                             if (!empty($imageTmp)) {
                                 $result = $worker->setImage($itemsWithoutImage['item_type'], $itemsWithoutImage['item_id'], $imageTmp);
@@ -222,7 +220,10 @@ class Import
                         }
                     }
 
-                    if (empty($result)) {
+                    if ($tried === false) {
+                        $countUnavailable++;
+                    }
+                    elseif (empty($result)) {
                         $countBad++;
                     }
                 }
