@@ -66,6 +66,11 @@ class Import
         $this->imports[$worker::TYPE] = $worker;
     }
 
+    public function setAfterAll($afterAll): void
+    {
+        $this->afterAll = $afterAll;
+    }
+
     public function run(): void
     {
         $startTime = microtime(true);

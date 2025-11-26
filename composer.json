@@ -1,6 +1,6 @@
 {
     "name": "cry/robo2import",
-    "version": "4.0.8",
+    "version": "4.0.9",
     "description": "Import tyres and wheels from RoboTyre via Robo2 service",
     "type": "library",
     "license": "MIT",
