@@ -32,6 +32,8 @@ class Import
     protected ?int $limit = null;
     protected ?int $offset = null;
 
+    protected $afterAll = null;
+
     protected string $version;
 
     protected array $imports = [
@@ -169,9 +171,11 @@ class Import
             $this->log('Finish import ' . $type . 's', $this->getLogCode($worker::CODE, 99));
         }
 
-        $logString = $worker->afterAll();
-        if ($logString !== null) {
-            $this->log('After All: ' . $logString, 997);
+        if ($this->afterAll !== null) {
+            $logString = ($this->afterAll)();
+            if ($logString !== null) {
+                $this->log('After All: ' . $logString, 997);
+            }
         }
 
         $this->log('Time spend: ' . gmdate('H:i:s', (int)(microtime(true) - $startTime)), 998);

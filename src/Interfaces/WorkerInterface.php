@@ -17,5 +17,4 @@ interface WorkerInterface
     public function getItemData(int $itemId): ?CallbackItem;
     public function getItemWithoutImages(?int $offset, ?int $limit): ?array;
     public function setImage(string $itemType, $itemId, string $imageTmp): bool;
-    public function afterAll(): ?string;
 }
