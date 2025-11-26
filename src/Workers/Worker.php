@@ -80,4 +80,9 @@ abstract class Worker implements WorkerInterface
     {
         return null;
     }
+
+    public function afterAll(): ?string
+    {
+        return null;
+    }
 }

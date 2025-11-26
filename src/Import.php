@@ -86,7 +86,11 @@ class Import
                 $count = count($items);
                 $this->log('Received ' . $type . 's: ' . $count, $this->getLogCode($worker::CODE, 10));
 
-                if ($this->offset !== null && $this->limit !== null) {
+                if ($this->limit !== null) {
+                    if ($this->offset === null) {
+                        $this->offset = 0;
+                    }
+
                     $items = array_slice($items, $this->offset, $this->limit);
                 }
 
@@ -105,6 +109,8 @@ class Import
                     if ($n % 1000 === 0) {
                         $this->log('Processed ' . $type . 's [' . $n . '/' . $count . ']', $this->getLogCode($worker::CODE, 25));
                     }
+
+                    $item = $worker->fix($item);
 
                     if ($worker->skip($item)) {
                         $countSkip++;
@@ -161,6 +167,11 @@ class Import
             }
 
             $this->log('Finish import ' . $type . 's', $this->getLogCode($worker::CODE, 99));
+        }
+
+        $logString = $worker->afterAll();
+        if ($logString !== null) {
+            $this->log('After All: ' . $logString, 997);
         }
 
         $this->log('Time spend: ' . gmdate('H:i:s', (int)(microtime(true) - $startTime)), 998);
