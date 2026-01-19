@@ -1,6 +1,6 @@
 {
     "name": "cry/robo2import",
-    "version": "4.0.9",
+    "version": "4.1.0",
     "description": "Import tyres and wheels from RoboTyre via Robo2 service",
     "type": "library",
     "license": "MIT",
@@ -8,7 +8,8 @@
         "php": ">=7.4",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "cry/cry-cms-curl": "^0.3.1"
     }
     ,
     "require-dev": {

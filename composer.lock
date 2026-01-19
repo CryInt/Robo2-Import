@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab2947dc5df4c9ae5d7e84df423609ed",
-    "packages": [],
+    "content-hash": "e3ef9d7aa060d88dff6e6b9df96627a7",
+    "packages": [
+        {
+            "name": "cry/cry-cms-curl",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CryInt/CryCMS-CURL.git",
+                "reference": "ef6af87ca8cd944e65edaac4fc069581f3cd8cb9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CryInt/CryCMS-CURL/zipball/ef6af87ca8cd944e65edaac4fc069581f3cd8cb9",
+                "reference": "ef6af87ca8cd944e65edaac4fc069581f3cd8cb9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-fileinfo": "*",
+                "ext-json": "*",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "ext-dom": "*",
+                "phpunit/phpunit": "9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CryCMS\\CURL\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitrii (Cry) Rudakovskii",
+                    "email": "cry.int@gmail.com"
+                }
+            ],
+            "description": "Facade for PHP cURL",
+            "support": {
+                "issues": "https://github.com/CryInt/CryCMS-CURL/issues",
+                "source": "https://github.com/CryInt/CryCMS-CURL/tree/v0.3.1"
+            },
+            "time": "2026-01-15T15:19:33+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "roave/security-advisories",
@@ -978,9 +1026,10 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "ext-json": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
